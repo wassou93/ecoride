@@ -1,5 +1,5 @@
-const fournisseur = require("../model/fournisseur");
-const Fournisseur = require("../model/fournisseur");
+const fournisseur = require("../models/fournisseur");
+const Fournisseur = require("../models/fournisseur");
 
 //_________________________________________________________________1:First _Part (Fournisseur-Crud)_______________________________________________________________________________
 

@@ -14,7 +14,7 @@ const path = require("path");
 const {
 
     affichesocket
-} = require("./controller/fournisseurcontroller");
+} = require("./controllers/fournisseurcontroller");
 
 
 

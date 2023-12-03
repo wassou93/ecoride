@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 //
-const fournisseurcontroller = require("../controller/fournisseurcontroller");
-const piececontroller = require("../controller/piececontroller");
+const fournisseurcontroller = require("../controllers/fournisseurcontroller");
+const piececontroller = require("../controllers/piececontroller");
 const validate = require("../middl/validate");
 
 const { json } = require("body-parser");
