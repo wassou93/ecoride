@@ -2,15 +2,15 @@
 const http = require("http");
 const express = require("express");
 const mongoose = require("mongoose");
-const dbConnection = require("../EcoRide/config/dbconnection.json");
+const dbConnection = require("../ecoride/config/dbconnection.json");
 const bodyParser = require("body-parser");
-const fournisseurRouter = require("../EcoRide/routes/fournisseurr");
+const fournisseurRouter = require("../ecoride/routes/fournisseurr");
 const path = require("path");
 
 
 
 
-//question 9
+
 const {
 
     affichesocket
