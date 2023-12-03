@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show EcoRide Details</title>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <!-- Style for better appearance -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        #container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        select,
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Container for better layout -->
+<div id="container">
+    <!-- HTML form for entering ID and triggering actions -->
+    <center>
+        <label for="entityType">Select What you need to know :</label>
+        <select id="entityType">
+            <option value="fournisseur">Fournisseurs</option>
+            <option value="pieces">Pieces</option>
+        </select><br>
+        <label for="">Enter ID:</label>
+        <input id="id" type="text"><br>
+        <button onclick="showDetails()">Show Details</button>
+    </center>
+
+    <!-- Display details container -->
+    <div id="detailsContainer"></div>
+</div>
+
+<script>
+    const socket = io.connect();
+
+socket.on("partie",(data)=>{
+
+    s=document.createElement("p")
+    s.innerHTML=("<center>"+"Fournisseur"+":""<br>"+"Piece"+":""<br>"+"Stock"+":" "</center>")
+    document.body.appendChild(s)
+   
+})
+
+
+socket.on("aff",(data)=>{
+console.log("aff"+JSON.stringify(data))
+s=document.createElement("p")
+s.innerHTML=("")
+document.body.appendChild(s)
+
+})
+
+    // Function to show details based on entity type and ID
+    function showDetails() {
+          piece={
+        id:id.value
+    }
+    console.log("Pieces"+JSON.stringify(pieces))
+    socket.emit("aff",pieces)
+    }
+
+    // Function to send Fournisseur details
+    function envoye() {
+         piece={
+        id:id.value
+         }
+        // Emit 'partie' event with Fournisseur IDs
+        socket.emit('Pieces', { id1 });
+    }
+   
+        
+    
+</script>
+
+
+</script>
+
+</body>
+</html>

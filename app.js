@@ -1,70 +1,82 @@
-var createError = require('http-errors');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+// Importing required modules
+const http = require("http");
+const express = require("express");
+const mongoose = require("mongoose");
+const dbConnection = require("../EcoRide/config/dbconnection.json");
 const bodyParser = require("body-parser");
-var express = require('express');
-var path = require('path');
-var http = require("http");
-var mongo = require('mongoose');
-var dbconnect = require('./config/dbconnection.json');
+const fournisseurRouter = require("../EcoRide/routes/fournisseurr");
+const path = require("path");
 
 
-var indexRouter = require('./routes/index');
-//// Routes here ...
 
-//// Controller functions here used by socket.io ...
 
-mongo.connect(dbconnect.url, {
-  useUnifiedTopology:true,
-  useNewUrlParser:true,
-})
-    .then(() => console.log('mongo connected'))
-    .catch((err) => console.error(err));
+//question 9
+const {
 
+    affichesocket
+} = require("./controller/fournisseurcontroller");
+
+
+
+// Connecting to MongoDB
+mongoose.connect(dbConnection.url, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    }).then(() => console.log('mongo connecter'))
+    .catch((err) => console.log(err));
+
+// Setting up Express app
 var app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'twig');
+// Setting up view engine
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "twig");
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
+// Setting up body-parser middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use('/', indexRouter);
-//// Assign endpoints to routes here ...
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
+// Using fournisseur router
+app.use("/Fournisseur", fournisseurRouter);
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
-
+// Creating HTTP server
 const server = http.createServer(app);
+
+// Setting up Socket.IO
 const io = require("socket.io")(server);
-
 io.on("connection", (socket) => {
+    console.log("user connected");
+    socket.emit("msg", "user connected");
 
-  //// Socket events here...
 
+
+    // Setting up Afiiche Socket
+    socket.on("aff", async(data) => {
+        const r = await affichesocket(data);
+        console.log("welcome", JSON.stringify(r));
+        io.emit("aff", r);
+    });
+
+
+    // Setting p msg function
+    socket.on("msg", (data) => {
+        add(data.object)
+        io.emit("msg", data.name + ":" + data.object);
+    });
+
+
+    // For disconnecting user
+    socket.on("disconnect", () => {
+        console.log("user disconnect");
+        io.emit("msg", "user disconnect");
+    })
 });
-let callback = () => console.log("Server running...");
-server.listen(3000, callback);
 
+// Starting server
+server.listen(3000, () => {
+    console.log('serveur run')
+});
 
+// Exporting app for testing
 module.exports = app;
