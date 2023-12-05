@@ -4,7 +4,7 @@ var mongo = require("mongoose");
 // Defining the Schema class
 const Schema = mongo.Schema;
 
-// Creating a new Schema for the classroom
+// Creating a new Schema for the Fournisseur
 const fournisseur = new Schema({
     // Fournisseur Name
     FName: String,

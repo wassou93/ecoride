@@ -1,5 +1,9 @@
 const fournisseur = require("../models/fournisseur");
 const Fournisseur = require("../models/fournisseur");
+const Piece = require("../models/pieces");
+
+
+
 
 //_________________________________________________________________1:First _Part (Fournisseur-Crud)_______________________________________________________________________________
 
@@ -75,6 +79,60 @@ async function findUserName(req, res, next) {
 
 
 
+// Inside the affichesocket function
+async function affichesocket(data) {
+    const { entityType, id } = data;
+
+    try {
+        let result;
+
+        // Check if id is provided, if not, fetch all data
+        if (!id) {
+            result = await fetchAllDetails(entityType);
+        } else if (entityType.toLowerCase() === 'fournisseur') {
+            result = await fetchFournisseurDetails(id);
+        } else if (entityType.toLowerCase() === 'pieces') {
+            result = await fetchPiecesDetails(id);
+        } else {
+            throw new Error('Invalid entityType');
+        }
+
+        return result;
+    } catch (error) {
+        console.error('Error in affichesocket:', error);
+        throw error; // Propagate the error to handle it on the client side
+    }
+}
+
+// Fetch all details for the given entityType
+async function fetchAllDetails(entityType) {
+    try {
+        let result;
+
+        if (entityType.toLowerCase() === 'fournisseur') {
+            result = await Fournisseur.find();
+        } else if (entityType.toLowerCase() === 'pieces') {
+            result = await Piece.find();
+        } else {
+            throw new Error('Invalid entityType');
+        }
+
+        return { data: result }; // Wrap the result in an object
+    } catch (error) {
+        console.error('Error in fetchAllDetails:', error);
+        throw error; // Propagate the error to handle it on the client side
+    }
+}
+
+// Fetch Fournisseur details by ID
+async function fetchFournisseurDetails(id) {
+    return await Fournisseur.findById(id);
+}
+
+// Fetch Pieces details by ID
+async function fetchPiecesDetails(id) {
+    return await Piece.findById(id);
+}
 
 
 
@@ -89,7 +147,8 @@ module.exports = {
     update,
     show,
     findUser,
-    findUserName
+    findUserName,
+    affichesocket
 
 
 };

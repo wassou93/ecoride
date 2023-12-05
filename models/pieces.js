@@ -4,13 +4,13 @@ var mongo = require("mongoose");
 // Defining the Schema class
 const Schema = mongo.Schema;
 
-// Creating a new Schema for the classroom
+// Creating a new Schema for the Pieces
 const pieces = new Schema({
 
     // Piece Name
     PName: String,
 
-    // The Fourniseuur ID of the classroom
+    // The Fourniseuur ID of the Pieces
     FID: String,
 
     // Etat Stock
