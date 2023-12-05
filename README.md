@@ -19,3 +19,22 @@ To test the Socket.IO TWIG page, follow these instructions:
 - **Author:** Wassim Akkari
 - **Email:** was.akkari@gmail.com
 - **Date:** December 5, 2023
+
+### Socket.IO TWIG Testing Results
+
+#### _Example1: Login page_
+
+![Login Page](https://example.com/login-image.png)
+
+#### _Example2: Authentication failure - wrong creds entered!_
+
+![Login Page](https://example.com/login-image.png)
+
+#### _Example3: Login Successful - updated isonline status_
+
+![Login Page](https://example.com/login-image.png)
+
+#### _Example4: Logout Successful - updated isonline status_
+
+![Login Page](https://example.com/login-image.png)
+
