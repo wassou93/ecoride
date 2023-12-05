@@ -11,8 +11,10 @@ var dbconnect = require('./config/dbconnection.json');
 
 var indexRouter = require('./routes/index');
 //// Routes here ...
+var userRouter = require('./routes/user_routes');
 
 //// Controller functions here used by socket.io ...
+const { checkCredentials, getUserDetails, updateUserStatus } = require('./controllers/user_controller')
 
 mongo.connect(dbconnect.url, {
   useUnifiedTopology:true,
@@ -38,6 +40,7 @@ app.use(bodyParser.json());
 
 app.use('/', indexRouter);
 //// Assign endpoints to routes here ...
+app.use('/users', userRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -61,8 +64,64 @@ const io = require("socket.io")(server);
 io.on("connection", (socket) => {
 
   //// Socket events here...
+  console.log('User connected');
 
+  // Handle login event
+  socket.on('login', async (credentials) => {
+    // Check username and password (implement your authentication logic)
+    const isValid = await checkCredentials(credentials);
+    let userDetails = "";
+    if(isValid)  {
+      console.log("valid");
+      userDetails = await getUserDetails(credentials.username);
+      await updateUserStatus(userDetails.id, true);
+      userDetails = await getUserDetails(credentials.username);
+
+      console.log(userDetails);
+    } else {
+      console.log("not valid");
+    }
+    // Emit the login result back to the client
+    console.log("Emitting: " + (isValid ? 'Login successful!' : 'User not found'));
+    socket.emit('loginResult', {
+      success: isValid,
+      message: (isValid ? 'Login successful!' : 'User not found'),
+      user: userDetails,
+    });
+  });
+
+  // Handle login event
+  socket.on('logout', async (credentials) => {
+    // Check username and password (implement your authentication logic)
+    const isValid = await checkCredentials(credentials);
+    let userDetails = "";
+    if(isValid)  {
+      console.log("valid");
+      userDetails = await getUserDetails(credentials.username);
+      await updateUserStatus(userDetails.id, false);
+      userDetails = await getUserDetails(credentials.username);
+
+      console.log(userDetails);
+    } else {
+      console.log("not valid");
+    }
+    // Emit the login result back to the client
+    console.log("Emitting: " + (isValid ? 'Logout successful!' : 'User not found'));
+    socket.emit('logoutResult', {
+      success: isValid,
+      message: (isValid ? 'Logout successful!' : 'User not found'),
+      user: userDetails,
+    });
+  });
+
+  // Handle other socket events...
+
+  // Disconnect event
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
 });
+
 let callback = () => console.log("Server running...");
 server.listen(3000, callback);
 
