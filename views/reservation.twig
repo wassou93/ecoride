@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>réservation</title>
+    <link rel="stylesheet" href="/public/stylesheets/styleres.css">
+</head>
+<body>
+    <h1>Chercher votre trajet</h1>
+    <form method="POST" action="/reservation/addreservation">
+        <label for="date_debut">Date de début:</label>
+        <input type="date" id="date_debut" name="date_debut" required>
+        <br>
+        <label for="date_fin">Date de fin:</label>
+        <input type="date" id="date_fin" name="date_fin" required>
+        <br>
+        <label for="lieu_depart">Lieu de départ:</label>
+        <input type="text" id="lieu_depart" name="lieu_depart" required>
+        <br>
+        <label for="lieu_destination">Lieu de destination:</label>
+        <input type="text" id="lieu_destination" name="lieu_destination" required>
+        <br>
+        <label for="nbr_place">Nombre de places:</label>
+        <input type="number" id="nbr_place" name="nbr_place" required>
+        <br>
+        <button type="submit">Rechercher</button>
+    </form>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', async function (event) {
+                event.preventDefault();
+    
+                const formData = new FormData(form);
+    
+                try {
+                    const response = await fetch('/reservation/addreservation', {
+                        method: 'POST',
+                        body: formData,
+                    });
+    
+                    if (response.ok) {
+                        const data = await response.json();
+                        showToast(data.message);
+                    } else {
+                        showToast('Failed to add reservation');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showToast('An unexpected error occurred');
+                }
+            });
+    
+            function showToast(message) {
+                // Ajoutez ici votre logique pour afficher un toast
+                alert(message);
+            }
+        });
+    </script>
+    
+</body>
+</html>
