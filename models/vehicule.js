@@ -6,7 +6,6 @@ const Vehicule = new Schema({
         marque:String, 
         modele:String,
         matricule:Number,
-        prix:Number,
         diponibilite:Boolean,
     }); 
     module.exports=mongo.model("vehicule",Vehicule)  

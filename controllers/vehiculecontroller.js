@@ -6,9 +6,10 @@ async function add(req,res,next){
         console.log(req.body)
         const vehicule=new Vehicule(req.body);
         await vehicule.save();
-        res.status(200).send('Successfully added Vehicule');
-    }catch(err){
+        res.status(200).json({ message: 'Successfully added vehicule' });
+    } catch (err) {
         console.log(err);
+        res.status(500).json({ message: 'Failed to add vehicule' });
     }
 }
 
