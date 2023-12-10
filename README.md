@@ -39,4 +39,9 @@ Gestion Vehicule: <br>
 ![sss](https://github.com/wassou93/ecoride/assets/105807219/4b6e93b0-c643-4507-9831-2039d21d2c62)
 ![Capture](https://github.com/wassou93/ecoride/assets/105807219/4c3a92e8-7240-460f-85d0-2776f099161a)
 
+### Test the Socket.IO pieces.twig Page
+
+To test the pieces.twig page :
+
+ Open the following link in your browser: [http://localhost:3000/fournisseur/pieces](http://localhost:3000/fournisseur/pieces)
 
