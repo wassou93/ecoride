@@ -30,7 +30,6 @@ To test the Socket.IO TWIG page, follow these instructions:
 #### _Example4: Logout Successful - updated isonline status_
 <img width="377" alt="Logout successful" src="https://github.com/wassou93/ecoride/assets/8655283/683a3729-4451-4ec3-94c3-a777547585eb">
 
-
 - **Author:** Wassim Akkari
 - **Email:** was.akkari@gmail.com
 - **Date:** December 5, 2023
