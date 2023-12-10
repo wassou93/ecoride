@@ -63,7 +63,7 @@ const io = require("socket.io")(server);
 
 io.on("connection", (socket) => {
 
-  //// Socket events here...
+  //// Socket events here..
   console.log('User connected');
 
   // Handle login event
