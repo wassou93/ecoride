@@ -9,7 +9,10 @@ var mongo = require('mongoose');
 var dbconnect = require('./config/dbconnection.json');
 
 
+
 var indexRouter = require('./routes/index');
+var reservationrouter=require("./routes/reservation");
+var vehiculeroute=require("./routes/vehicule");
 //// Routes here ...
 var userRouter = require('./routes/user_routes');
 
@@ -34,11 +37,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use('/', indexRouter);
+app.use("/reservation",reservationrouter);
+app.use("/vehicule",vehiculeroute);
 //// Assign endpoints to routes here ...
 app.use('/users', userRouter);
 
@@ -61,7 +68,6 @@ app.use(function(err, req, res, next) {
 const server = http.createServer(app);
 const io = require("socket.io")(server);
 
-io.on("connection", (socket) => {
 
   //// Socket events here...
   console.log('User connected');
@@ -115,12 +121,17 @@ io.on("connection", (socket) => {
   });
 
   // Handle other socket events...
+  
+  // Écoute de l'événement d'ajout de conducteur
+  socket.on('conducteurAjoute', (data) => {
 
+    socket.emit('conducteurAjouteNotification', data);
+  });
   // Disconnect event
   socket.on('disconnect', () => {
     console.log('User disconnected');
   });
-});
+
 
 let callback = () => console.log("Server running...");
 server.listen(3000, callback);
