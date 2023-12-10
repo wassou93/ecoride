@@ -1,0 +1,26 @@
+<html>
+<head>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+
+
+
+<center><label for="">Titre de reponse:</label>
+<input id="contenu" type="text"><br>
+<label for="">contenu:</label>
+<input onclick="envoye()" type="submit">
+<button onclick="addReponse()" >addReponse stat</button></center>
+
+<script>
+const socket=io.connect();
+
+
+socket.on("addReponse",(data)=>{
+
+    s=document.createElement("p")
+    document.body.appendChild(s)
+   
+})
+</body>
+</html> 
