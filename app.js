@@ -67,7 +67,10 @@ app.use(function(err, req, res, next) {
 
 const server = http.createServer(app);
 const io = require("socket.io")(server);
+io.on("connection", (socket) => {
 
+  //// Socket events here...
+  console.log('User connected');
 
   //// Socket events here...
   console.log('User connected');
@@ -132,7 +135,7 @@ const io = require("socket.io")(server);
     console.log('User disconnected');
   });
 
-
+});
 let callback = () => console.log("Server running...");
 server.listen(3000, callback);
 
