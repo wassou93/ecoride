@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Show EcoRide Details</title>
+		<script src="/socket.io/socket.io.js"></script>
+
+		<!-- Style for better appearance -->
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				background-color: #f4f4f4;
+				margin: 0;
+				padding: 0;
+			}
+
+			#container {
+				max-width: 600px;
+				margin: 50px auto;
+				background-color: #fff;
+				padding: 20px;
+				border-radius: 8px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			}
+
+			label {
+				display: block;
+				margin-bottom: 10px;
+				font-weight: bold;
+			}
+
+			select,
+			input {
+				width: 100%;
+				padding: 10px;
+				margin-bottom: 20px;
+				border: 1px solid #ccc;
+				border-radius: 4px;
+				box-sizing: border-box;
+			}
+
+			button {
+				background-color: #4caf50;
+				color: #fff;
+				padding: 10px 20px;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+			}
+
+			button:hover {
+				background-color: #45a049;
+			}
+
+			#detailsContainer {
+				margin-top: 20px;
+				text-align: center;
+			}
+
+			.resultContainer {
+				background-color: #e0e0e0;
+				padding: 10px;
+				border-radius: 8px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+				margin-bottom: 10px;
+			}
+
+			.resultTitle {
+				font-weight: bold;
+				font-size: 18px;
+				margin-bottom: 10px;
+			}
+
+			.resultProperty {
+				font-weight: bold;
+			}
+
+			.resultValue {
+				margin-top: 5px;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<!-- Container for better layout -->
+		<div
+			id="container">
+			<!-- HTML form for entering ID and triggering actions -->
+			<center>
+				<label for="entityType">Select What you need to know :</label>
+				<select id="entityType">
+					<option value="fournisseur">Fournisseurs</option>
+					<option value="Pieces">Pieces</option>
+				</select><br>
+				<label for="">Enter ID:</label>
+				<input id="id" type="text"><br>
+				<button onclick="showAll()">Show All</button>
+				<button onclick="showDetails()">Single Details</button>
+				<button onclick="deleteEntry()">Fournisseur Delete</button>
+			</center>
+
+			<!-- Display details container -->
+			<div id="detailsContainer"></div>
+		</div>
+
+		<script>
+			const socket = io.connect();
+
+// Listen for the search result from the server
+socket.on('aff', (result) => { // Handle the result, for example, update the UI
+const detailsContainer = document.getElementById('detailsContainer');
+const resultTitle = document.createElement('div');
+resultTitle.className = 'resultTitle';
+resultTitle.textContent = 'Search Result';
+
+// Clear previous results
+detailsContainer.innerHTML = '';
+
+// Append the new result
+detailsContainer.appendChild(resultTitle);
+
+if (result.data) { // If 'data' property exists, assume it's an array of objects
+const dataArray = result.data;
+
+// Loop through each data entry
+dataArray.forEach(dataEntry => {
+const resultContainer = document.createElement('div');
+resultContainer.className = 'resultContainer';
+
+// Loop through properties of each data entry
+for (const property in dataEntry) {
+if (dataEntry.hasOwnProperty(property)) {
+const resultProperty = document.createElement('div');
+resultProperty.className = 'resultProperty';
+resultProperty.textContent = property;
+
+const resultValue = document.createElement('div');
+resultValue.className = 'resultValue';
+
+// Check if the property is an object and stringify it with line breaks
+const value = typeof dataEntry[property] === 'object' ? JSON.stringify(dataEntry[property], null, 2).replace(/\n/g, '<br/>') : dataEntry[property];
+
+// Display each property and its value in a more readable format
+resultValue.innerHTML = `<b>${property}:</b> ${value}`;
+
+resultContainer.appendChild(resultProperty);
+resultContainer.appendChild(resultValue);
+}
+}
+
+detailsContainer.appendChild(resultContainer);
+});
+} else { // If 'data' property doesn't exist, assume it's a single detail
+for (const property in result) {
+if (result.hasOwnProperty(property)) {
+const resultContainer = document.createElement('div');
+resultContainer.className = 'resultContainer';
+
+const resultProperty = document.createElement('div');
+resultProperty.className = 'resultProperty';
+resultProperty.textContent = property;
+
+const resultValue = document.createElement('div');
+resultValue.className = 'resultValue';
+
+// Check if the property is an object and stringify it with line breaks
+const value = typeof result[property] === 'object' ? JSON.stringify(result[property], null, 2).replace(/\n/g, '<br/>') : result[property];
+
+// Display each property and its value in a more readable format
+resultValue.innerHTML = `<b>${property}:</b> ${value}`;
+
+resultContainer.appendChild(resultProperty);
+resultContainer.appendChild(resultValue);
+
+detailsContainer.appendChild(resultContainer);
+}
+}
+}
+});
+
+
+// Function to show details based on entity type and ID
+function showDetails() {
+const entityType = document.getElementById('entityType').value;
+const id = document.getElementById('id').value;
+
+// Emit 'aff' event with entity type and ID
+console.log('Emitting aff event with:', {entityType, id});
+socket.emit('aff', {entityType, id});
+}
+
+
+// Function to show all details based on entity type
+function showAll() {
+const entityType = document.getElementById('entityType').value;
+
+// Emit 'aff' event with entity type and no specific ID
+
+console.log('Emitting aff event with:', {entityType});
+socket.emit('aff', {entityType});
+
+}
+
+
+function deleteEntry() {
+const entityType = document.getElementById('entityType').value;
+const id = document.getElementById('id').value;
+
+// Emit 'delete' event with entity type and ID
+socket.emit('delete', {entityType, id});
+}
+		</script>
+	</body>
+
+</html>
