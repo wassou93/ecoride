@@ -10,10 +10,16 @@ var dbconnect = require('./config/dbconnection.json');
 
 
 var indexRouter = require('./routes/index');
-//// Routes here ...
+const reponserouter = require("./routes/reponse");
+const reclamationrouter = require("./routes/reclamation");
+
 
 //// Controller functions here used by socket.io ...
-
+const { add} = require("./controller/reclamationcontroller,reponsecontroller");
+const {
+ addreclamationsoket,
+ addreponsesoket
+} = require("./controller/joueurcontroller");
 mongo.connect(dbconnect.url, {
   useUnifiedTopology:true,
   useNewUrlParser:true,
@@ -37,7 +43,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use('/', indexRouter);
-//// Assign endpoints to routes here ...
+app.use("/reponse", reponserouter);
+app.use("/reclamation", reclamationrouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -60,7 +68,14 @@ const io = require("socket.io")(server);
 
 io.on("connection", (socket) => {
 
-  //// Socket events here...
+  addreclamationsoket(data);
+  io.emit("reclamation", data);
+
+});
+io.on("connection", (socket) => {
+
+  addreponsesoket(data);
+  io.emit("reponse", data);
 
 });
 let callback = () => console.log("Server running...");
