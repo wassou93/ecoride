@@ -1,0 +1,27 @@
+<html>
+<head>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+
+
+
+<center><label for="">Titre de reclamation:</label>
+<input id="Titre" type="text"><br>
+<label for="">description:</label>
+<input id="description" type="text"><br>
+<input onclick="envoye()" type="submit">
+<button onclick="addreclamation()" >addreclamation stat</button></center>
+
+<script>
+const socket=io.connect();
+
+
+socket.on("reclamation",(data)=>{
+
+    s=document.createElement("p")
+    document.body.appendChild(s)
+   
+})
+</body>
+</html> 

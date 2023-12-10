@@ -1,0 +1,91 @@
+<!-- user.twig -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login</title>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+<center>
+    <h1>User Login/Logout</h1>
+
+    <!-- Display login result -->
+    <div id="login_out-result"></div>
+
+    <!-- Login form -->
+    <form id="login-form">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <br> <br>
+        <button type="button" onclick="login()">Login</button>
+        <button type="button" onclick="logout()">Logout</button>
+    </form>
+
+    <script>
+        const socket = io.connect();
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Emit login event to the server
+            socket.emit('login', { username, password });
+        }
+
+        function logout() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Emit logout event to the server
+            socket.emit('logout', { username, password });
+        }
+
+        // Listen for login result from the server
+        socket.on('loginResult', (result) => {
+            const loginResultDiv = document.getElementById('login_out-result');
+            loginResultDiv.innerHTML = result.message;
+
+            // If login is successful, display user details
+            if (result.success) {
+                const userDetails = `
+                    <p>First Name: <span style="color: ${result.user.firstname !== '' ? 'green' : 'red'}">${result.user.firstname !== '' ? result.user.firstname : 'Not provided'}</span></p>
+                    <p>Last Name: <span style="color: ${result.user.lastname !== '' ? 'green' : 'red'}">${result.user.lastname !== '' ? result.user.lastname : 'Not provided'}</span></p>
+                    <p>Username: <span style="color: ${result.user.username !== '' ? 'green' : 'red'}">${result.user.username !== '' ? result.user.username : 'Not provided'}</span></p>
+                    <p>Email: <span style="color: ${result.user.email !== '' ? 'green' : 'red'}">${result.user.email !== '' ? result.user.email : 'Not provided'}</span></p>
+                    <p>Country: <span style="color: ${result.user.country !== '' ? 'green' : 'red'}">${result.user.country !== '' ? result.user.country : 'Not provided'}</span></p>
+                    <p>Address: <span style="color: ${result.user.address !== '' ? 'green' : 'red'}">${result.user.address !== '' ? result.user.address : 'Not provided'}</span></p>
+                    <p>Language: <span style="color: ${result.user.language !== '' ? 'green' : 'red'}">${result.user.language !== '' ? result.user.language : 'Not provided'}</span></p>
+                    <p>Sex: <span style="color: ${result.user.sex !== '' ? 'green' : 'red'}">${result.user.sex !== '' ? result.user.sex : 'Not provided'}</span></p>
+                    <p>Connected: <span style="color: ${result.user.isonline !== '' ? 'green' : 'red'}">${result.user.isonline !== '' ? result.user.isonline : 'Not provided'}</span></p>
+                `;
+                loginResultDiv.innerHTML += userDetails;
+            } else {
+                loginResultDiv.innerHTML = `<p style="color: red;">Authentication failure, please try again.</p>`;
+            }
+        });
+
+        // Listen for logout result from the server
+        socket.on('logoutResult', (result) => {
+            const logoutResultDiv = document.getElementById('login_out-result');
+            logoutResultDiv.innerHTML = result.message;
+
+            // If logout is successful, display user details
+            if (result.success) {
+                const userDetails = `
+                    <p>Connected: <span style="color: ${result.user.isonline !== '' ? 'green' : 'red'}">${result.user.isonline !== '' ? result.user.isonline : 'Not provided'}</span></p>
+                `;
+                logoutResultDiv.innerHTML += userDetails;
+            } else {
+                logoutResultDiv.innerHTML = `<p style="color: red;">Authentication failure, please try again.</p>`;
+            }
+        });
+    </script>
+</center>
+</body>
+</html>
