@@ -1,4 +1,4 @@
-const Reponse = require("../model/reponse");
+const Reponse = require("../../ecoride/models/reponse");
 async function addReponse(req, res, next) {
   try {
     console.log("body :" + JSON.stringify(req.body));

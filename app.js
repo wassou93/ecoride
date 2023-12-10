@@ -7,7 +7,7 @@ var path = require('path');
 var http = require("http");
 var mongo = require('mongoose');
 var dbconnect = require('./config/dbconnection.json');
-var indexRouter = require('./routes/index');
+
 const bodyParser = require("body-parser");
 const offreRouter = require("./routes/offre");
 const typeRouter = require("./routes/type");
@@ -23,7 +23,15 @@ const { affichesocketOffre, affichesocketType } = require("./controllers/offreco
 const fournisseurRouter = require("../ecoride/routes/fournisseurr");
 
 const { affichesocket } = require("./controllers/fournisseurcontroller");
+const indexRouter =require("../ecoride/routes/index")
+
+const reponserouter=require("../ecoride/routes/reponse");
+const reclamationrouter=require("../ecoride/routes/reclamation");
+const reservationrouter=require("../ecoride/routes/reservation");
+const vehiculeroute=require("../ecoride/routes/vehicule");
+const userRouter= require("../ecoride/routes/user_routes")
 const fournisseur = require("./models/fournisseur");
+
 mongo.connect(dbconnect.url,
   {
     useUnifiedTopology: true,
@@ -297,10 +305,7 @@ io.on("connection", (socket) => {
   });
 });
 
-// Démarrage du serveur
-server.listen(3002, () => {
-  console.log('Serveur en cours d\'exécution sur le port 3002');
-});
+
 
 // Starting server
 const PORT = process.env.PORT || 3000;

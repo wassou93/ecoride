@@ -11,4 +11,4 @@ const Reclamation = new Schema({
 });
 
 
-module.exports = mongo.model("reclamation", Reclamation);
+module.exports = mongoose.model("reclamation", Reclamation);

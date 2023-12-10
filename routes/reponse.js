@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const reponseController = require("../controller/reponseController");
+const reponseController = require("../../ecoride/controllers/reponsecontroller");
 
 router.post("/addReponse", reponseController.addReponse);
 router.get("/showReponses", reponseController.showReponses);

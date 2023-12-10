@@ -5,4 +5,4 @@ const Reponse = new Schema({
   date: { type: Date, default: Date.now },
     
 });
-module.exports = mongo.model("reponse", Reponse);
+module.exports = mongoose.model("reponse", Reponse);

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const reponseController = require("../controller/reclamationController");
+const reclamationController = require("../../ecoride/controllers/reclamationController");
 
 router.post("/addReclamation", reclamationController.addReclamation);
 router.get("/showReclamations", reclamationController.showReclamations);

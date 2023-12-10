@@ -1,4 +1,4 @@
-const Reclamation = require("../model/reclamation");
+const Reclamation = require("../../ecoride/models/reclamation");
 async function addReclamation(req, res, next) {
   try {
     console.log("body :" + JSON.stringify(req.body));
