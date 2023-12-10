@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show EcoRide Details</title>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <style>
+        body 
+		{
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        #container 
+		{
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label 
+		{
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        select,
+        input 
+		{
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button 
+		{
+			background-color: #CD5C5C;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div id="container">
+    <center>
+        <label for="entityType">Consulter l'offre ou le Type d'offre :</label>
+        <select id="entityType">
+            <option value="offre">Offres</option>
+            <option value="type">Types d'offre</option>
+        </select><br>
+        <label for="id">Enter ID:</label>
+        <input id="id" type="text"><br>
+        <button onclick="showDetails()">Afficher les détails</button>
+    </center>
+    <div id="detailsContainer"></div>
+</div>
+
+<script>
+    const socket = io.connect();
+
+// Écouter la réponse de l'événement 'aff' du serveur
+socket.on('aff', (data) => {
+    const detailsContainer = document.getElementById('detailsContainer');
+    detailsContainer.innerHTML = '';
+
+    // Afficher les détails de l'entité sélectionnée
+    const details = document.createElement('p');
+    /*details.innerHTML = `<strong>Entity Type:</strong> ${data.entityType}<br>
+                        <strong>ID:</strong> ${data.id} <br>
+                        <strong>Nom:</strong> ${data.nom}<br>
+                        <strong>Description:</strong> ${data.description}<br>
+                        <strong>Prix:</strong> ${data.prix}<br>`; */
+
+	 details.innerHTML = `
+                        <strong>Nom:</strong> ${data.nom}<br>
+                        <strong>Description:</strong> ${data.description}<br>
+                        <strong>Prix:</strong> ${data.prix}<br>`;
+    detailsContainer.appendChild(details);
+});
+
+function showDetails() 
+{
+    const entityType = document.getElementById('entityType').value;
+    const id = document.getElementById('id').value;
+
+    // Émettre un événement 'aff' pour demander les détails de l'entité sélectionnée
+    socket.emit('aff', { entityType, id });
+}
+
+</script>
+
+</body>
+</html>
+
+
+
