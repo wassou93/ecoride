@@ -11,6 +11,16 @@ var dbconnect = require('./config/dbconnection.json');
 
 
 var indexRouter = require('./routes/index');
+const reponserouter = require("./routes/reponse");
+const reclamationrouter = require("./routes/reclamation");
+
+
+//// Controller functions here used by socket.io ...
+const { add} = require("./controller/reclamationcontroller,reponsecontroller");
+const {
+ addreclamationsoket,
+ addreponsesoket
+} = require("./controller/joueurcontroller");
 var reservationrouter=require("./routes/reservation");
 var vehiculeroute=require("./routes/vehicule");
 //// Routes here ...
@@ -43,10 +53,13 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+
+//// Assign endpoints to routes here ...
 app.use('/', indexRouter);
+app.use("/reponse", reponserouter);
+app.use("/reclamation", reclamationrouter);
 app.use("/reservation",reservationrouter);
 app.use("/vehicule",vehiculeroute);
-//// Assign endpoints to routes here ...
 app.use('/users', userRouter);
 
 // catch 404 and forward to error handler
@@ -71,6 +84,76 @@ io.on("connection", (socket) => {
 
   //// Socket events here...
   console.log('User connected');
+
+  //// Socket events here...
+  console.log('User connected');
+
+  // Handle login event
+  socket.on('login', async (credentials) => {
+    // Check username and password (implement your authentication logic)
+    const isValid = await checkCredentials(credentials);
+    let userDetails = "";
+    if(isValid)  {
+      console.log("valid");
+      userDetails = await getUserDetails(credentials.username);
+      await updateUserStatus(userDetails.id, true);
+      userDetails = await getUserDetails(credentials.username);
+
+      console.log(userDetails);
+    } else {
+      console.log("not valid");
+    }
+    // Emit the login result back to the client
+    console.log("Emitting: " + (isValid ? 'Login successful!' : 'User not found'));
+    socket.emit('loginResult', {
+      success: isValid,
+      message: (isValid ? 'Login successful!' : 'User not found'),
+      user: userDetails,
+    });
+  });
+
+  // Handle login event
+  socket.on('logout', async (credentials) => {
+    // Check username and password (implement your authentication logic)
+    const isValid = await checkCredentials(credentials);
+    let userDetails = "";
+    if(isValid)  {
+      console.log("valid");
+      userDetails = await getUserDetails(credentials.username);
+      await updateUserStatus(userDetails.id, false);
+      userDetails = await getUserDetails(credentials.username);
+
+      console.log(userDetails);
+    } else {
+      console.log("not valid");
+    }
+    // Emit the login result back to the client
+    console.log("Emitting: " + (isValid ? 'Logout successful!' : 'User not found'));
+    socket.emit('logoutResult', {
+      success: isValid,
+      message: (isValid ? 'Logout successful!' : 'User not found'),
+      user: userDetails,
+    });
+  });
+
+  // Handle other socket events...
+  
+  // Écoute de l'événement d'ajout de conducteur
+  socket.on('conducteurAjoute', (data) => {
+
+    socket.emit('conducteurAjouteNotification', data);
+  });
+  // Disconnect event
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+
+  addreclamationsoket(data);
+  io.emit("reclamation", data);
+
+  addreponsesoket(data);
+  io.emit("reponse", data);
+
 
   //// Socket events here...
   console.log('User connected');
