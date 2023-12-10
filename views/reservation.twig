@@ -29,7 +29,13 @@
         
         <button type="submit">reserver</button>
     </form>
-
+    <script src="https://cdn.jsdelivr.net/npm/socket.io-client/dist/socket.io.js"></script>
+    <script>
+        const socket = io();
+        socket.on('conducteurAjouteNotification', function(data) {
+          alert(`Un conducteur nommé ${data.nom} a été ajouté !`);
+        });
+      </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.querySelector('form');
@@ -38,7 +44,6 @@
     
                 const formData = new FormData(form);
     
-                // Création d'un objet JavaScript à partir des données FormData
                 const jsonData = {};
                 formData.forEach((value, key) => {
                     jsonData[key] = value;
@@ -66,11 +71,9 @@
             });
     
             function showToast(message) {
-                // Ajoutez ici votre logique pour afficher un toast
                 alert(message);
             }
         });
     </script>
-    
 </body>
 </html>

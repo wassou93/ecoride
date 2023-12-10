@@ -65,11 +65,18 @@ app.use(function(err, req, res, next) {
 const server = http.createServer(app);
 const io = require("socket.io")(server);
 
-io.on("connection", (socket) => {
 
-  //// Socket events here...
+  io.on('connection', (socket) => {
+    console.log('Un utilisateur s\'est connecté');
+  
+    // Écoute de l'événement d'ajout de conducteur
+    socket.on('conducteurAjoute', (data) => {
+      // Envoi d'une notification à la page de réservation
+      io.emit('conducteurAjouteNotification', data);
+    });
+  });
 
-});
+
 let callback = () => console.log("Server running...");
 server.listen(3000, callback);
 
