@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>véhicule</title>
+    <link rel="stylesheet" href="/public/stylesheets/styleres.css">
+</head>
+<body>
+    <h1>Ajouter une vehicule</h1>
+    <form method="POST" action="/vehicule/addvehicule">
+        <label for="name_conducteur">nom conducteur:</label>
+        <input type="text" id="name_conducteur" name="name_conducteur" required>
+        <br>
+        <label for="marque">marque:</label>
+        <input type="text" id="marque" name="marque" required>
+        <br>
+        <label for="modele">modele:</label>
+        <input type="text" id="modele" name="modele" required>
+        <br>
+        <label for="matricule">matricule:</label>
+        <input type="text" id="matricule" name="matricule" required>
+        <br>
+        <label for="disponibilite">disponiblilite:</label>
+        <input type="checkbox" id="disponibilite" name="disponibilite" required>
+        <br>
+        <br>
+        <button type="submit" id="sendNotification">AJouter vehicule</button>
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/socket.io-client/dist/socket.io.js"></script>
+    <script>
+        const socket = io();
+        // Écoute de la soumission du formulaire
+        document.getElementById('sendNotification').addEventListener('click', function(event) {
+          event.preventDefault(); // Empêcher le comportement par défaut du formulaire
+      
+          const nomConducteur = document.getElementById('name_conducteur').value;
+      
+          // Émission d'un événement 'conducteurAjoute' vers le serveur avec le nom du conducteur
+          socket.emit('conducteurAjoute', { nom: nomConducteur });
+        });
+      </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', async function (event) {
+                event.preventDefault();
+    
+                const formData = new FormData(form);
+
+                const jsonData = {};
+                formData.forEach((value, key) => {
+                    jsonData[key] = value;
+                });
+    
+                try {
+                    const response = await fetch('/vehicule/addvehicule', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json' // Spécifier le type JSON
+                        },
+                        body: JSON.stringify(jsonData),
+                    });
+    
+                    if (response.ok) {
+                        const data = await response.json();
+                        showToast(data.message);
+                    } else {
+                        showToast('Failed to add vehicule');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showToast('An unexpected error occurred');
+                }
+            });
+    
+            function showToast(message) {
+                alert(message);
+            }
+        });
+    </script>
+    
+</body>
+</html>
